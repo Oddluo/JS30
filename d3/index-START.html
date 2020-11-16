@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Scoped CSS Variables and JS</title>
+    </head>
+    <body>
+        <h2>Update CSS Variables with <span class="hl">JS</span></h2>
+
+        <div class="controls">
+            <label for="spacing">Spacing:</label>
+            <input
+                id="spacing"
+                type="range"
+                name="spacing"
+                min="10"
+                max="200"
+                value="10"
+                data-sizing="px"
+            />
+
+            <label for="blur">Blur:</label>
+            <input
+                id="blur"
+                type="range"
+                name="blur"
+                min="0"
+                max="25"
+                value="10"
+                data-sizing="px"
+            />
+
+            <label for="base">Base Color</label>
+            <input id="base" type="color" name="base" value="#ffc600" />
+        </div>
+
+        <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500" />
+
+        <style>
+            /*
+              misc styles, nothing to do with CSS variables
+            */
+            :root {
+                --spacing: 5px;
+                --blur: 2px;
+                --base: yellow;
+            }
+
+            img {
+                /* 使用跟name属性相同的名字，等等能直接使用 */
+                padding: var(--spacing);
+                background: var(--base);
+                filter: blur(var(--blur));
+            }
+            .hl {
+                color: var(--base);
+            }
+
+            body {
+                text-align: center;
+                background: #193549;
+                color: white;
+                font-family: "helvetica neue", sans-serif;
+                font-weight: 100;
+                font-size: 50px;
+            }
+
+            .controls {
+                margin-bottom: 50px;
+            }
+
+            input {
+                width: 100px;
+            }
+        </style>
+
+        <script>
+            //简易做法
+            //1.获取全部input
+            // const inputs = document.querySelectorAll("input");
+            // //2.获取图片
+            // const img = document.querySelector("img");
+            // //设置处理函数
+            // function handleUpdate() {
+            //     if (this.name === "spacing") {
+            //         img.style.padding = this.value + "px";
+            //     }
+            //     if (this.name === "blur") {
+            //         img.style.filter = `blur(${this.value}px)`;
+            //     }
+            //     if (this.name === "base") {
+            //         img.style.background = this.value;
+            //         hl.style.color = this.value;
+            //     }
+            // }
+            // inputs.forEach((item) => {
+            //     item.addEventListener("change", handleUpdate);
+            // });
+
+            //优雅做法
+            //1.获取全部input
+            const inputs = document.querySelectorAll("input");
+            //2.定义处理函数
+            function handleUpdate() {
+                //3.使用自定义属性
+                const unit = this.dataset.sizing || "";
+                //4.使用文档整体元素控制免判断
+                document.documentElement.style.setProperty(
+                    `--${this.name}`,
+                    this.value + unit
+                );
+            }
+            inputs.forEach((item) => {
+                item.addEventListener("change", handleUpdate);
+            });
+        </script>
+    </body>
+</html>
